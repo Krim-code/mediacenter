@@ -1,14 +1,51 @@
 {% extends 'base.html' %}
 
-{% block title %}Профиль{% endblock %}
+{% block title %}Личный кабинет{% endblock %}
 
 {% block content %}
-<div class="max-w-md mx-auto bg-white p-6 rounded shadow">
-    <h2 class="text-2xl mb-6">Профиль</h2>
+<div class="max-w-2xl mx-auto bg-white p-6 rounded shadow">
+    <h2 class="text-2xl mb-6">Личный кабинет</h2>
     <form action="{% url 'profile' %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded">Сохранить изменения</button>
+        {{ form.media }}
+        {{ form.non_field_errors }}
+        <div class="mb-4">
+            {{ form.avatar.label_tag }} {{ form.avatar }}
+            {{ form.avatar.errors }}
+        </div>
+        <div class="mb-4">
+            {{ form.first_name.label_tag }} {{ form.first_name }}
+            {{ form.first_name.errors }}
+        </div>
+        <div class="mb-4">
+            {{ form.last_name.label_tag }} {{ form.last_name }}
+            {{ form.last_name.errors }}
+        </div>
+        <div class="mb-4">
+            {{ form.phone.label_tag }} {{ form.phone }}
+            {{ form.phone.errors }}
+        </div>
+        <div class="mb-4">
+            {{ form.course.label_tag }} {{ form.course }}
+            {{ form.course.errors }}
+        </div>
+        <div class="mb-4">
+            {{ form.specialty.label_tag }} {{ form.specialty }}
+            {{ form.specialty.errors }}
+        </div>
+        <div class="mb-4">
+            {{ form.group.label_tag }} {{ form.group }}
+            {{ form.group.errors }}
+        </div>
+        <div class="mb-4">
+            {{ form.address.label_tag }} {{ form.address }}
+            {{ form.address.errors }}
+        </div>
+        <div class="mb-4">
+            {{ form.activity.label_tag }} {{ form.activity }}
+            {{ form.activity.errors }}
+        </div>
+        <button type="submit" class="btn-primary py-2 px-4 rounded">Сохранить</button>
     </form>
 </div>
 {% endblock %}

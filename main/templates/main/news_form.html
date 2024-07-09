@@ -1,48 +1,40 @@
+
 {% extends 'base.html' %}
 
-{% block title %}Создание новости{% endblock %}
+{% block title %}Создать новость{% endblock %}
 
 {% block content %}
-<div class="max-w-md mx-auto bg-white p-6 rounded shadow">
+<div class="max-w-2xl mx-auto bg-white p-6 rounded shadow">
     <h2 class="text-2xl mb-6">{{ form.instance.pk|yesno:"Редактирование новости,Создание новости" }}</h2>
-    <form method="post" enctype="multipart/form-data">
+    <form action="{% url 'news_create' %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
+        {{ form.media }}
+        {{ form.non_field_errors }}
         <div class="mb-4">
-            <label for="title" class="block text-gray-700">Заголовок</label>
-            {{ form.title }}
-            {% for error in form.title.errors %}
-                <p class="text-red-500 text-sm">{{ error }}</p>
-            {% endfor %}
+            {{ form.title.label_tag }} {{ form.title }}
+            {{ form.title.errors }}
         </div>
         <div class="mb-4">
-            <label for="image" class="block text-gray-700">Изображение</label>
-            {{ form.image }}
-            {% for error in form.image.errors %}
-                <p class="text-red-500 text-sm">{{ error }}</p>
-            {% endfor %}
+            {{ form.summary.label_tag }} {{ form.summary }}
+            {{ form.summary.errors }}
         </div>
         <div class="mb-4">
-            <label for="summary" class="block text-gray-700">Краткое описание</label>
-            {{ form.summary }}
-            {% for error in form.summary.errors %}
-                <p class="text-red-500 text-sm">{{ error }}</p>
-            {% endfor %}
+            {{ form.detail.label_tag }} {{ form.detail }}
+            {{ form.detail.errors }}
         </div>
         <div class="mb-4">
-            <label for="content" class="block text-gray-700">Полное описание</label>
-            {{ form.content }}
-            {% for error in form.content.errors %}
-                <p class="text-red-500 text-sm">{{ error }}</p>
-            {% endfor %}
+            {{ form.image.label_tag }} {{ form.image }}
+            {{ form.image.errors }}
         </div>
         <div class="mb-4">
-            <label for="category" class="block text-gray-700">Категория</label>
-            {{ form.category }}
-            {% for error in form.category.errors %}
-                <p class="text-red-500 text-sm">{{ error }}</p>
-            {% endfor %}
+            {{ form.category.label_tag }} {{ form.category }}
+            {{ form.category.errors }}
         </div>
-        <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded mt-2">Создать</button>
+        <div class="mb-4">
+            {{ form.images.label_tag }} {{ form.images }}
+            {{ form.images.errors }}
+        </div>
+        <button type="submit" class="btn-primary py-2 px-4 rounded">Сохранить</button>
     </form>
 </div>
 {% endblock %}
