@@ -4,6 +4,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required, user_passes_test
 from .forms import UserProfileForm, LoginForm, NewsForm, ContactForm
 from .models import News, UserProfile, Slider
+import markdown2
 
 def home(request):
     slides = Slider.objects.all()
@@ -44,6 +45,8 @@ def news_list(request):
 
 def news_detail(request, pk):
     news_item = get_object_or_404(News, pk=pk)
+    news_item.content = markdown2.markdown(news_item.content)
+    print(news_item.content)
     return render(request, 'main/news_detail.html', {'news_item': news_item})
 
 @login_required
@@ -122,12 +125,12 @@ def profile_view(request):
     return render(request, 'main/profile.html', {'form': form})
 
 
-from django.core.mail import send_mail
-from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_protect
-from .forms import ContactForm
-from .models import ContactMessage
+from django.http import JsonResponse
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
 from django.conf import settings
+from .forms import ContactForm
 
 @csrf_protect
 def contact_view(request):
@@ -135,14 +138,22 @@ def contact_view(request):
         form = ContactForm(request.POST)
         if form.is_valid():
             contact_message = form.save()
+            # Рендеринг HTML-шаблона письма
+            html_content = render_to_string('emails/notification_email.html', {
+                'name': contact_message.name,
+                'email': contact_message.email,
+                'message': contact_message.message,
+                'url': 'https://example.com/messages/'  # Замените на реальный URL
+            })
             # Отправка email
-            send_mail(
-                subject=f"Новое сообщение от {contact_message.name}",
-                message=contact_message.message,
-                from_email=contact_message.email,
-                recipient_list=[settings.ADMIN_EMAIL],
-                fail_silently=False,
-            )
+            subject = f"Новое сообщение от {contact_message.name}"
+            from_email = settings.EMAIL_HOST_USER
+            to = [settings.ADMIN_EMAIL]
+
+            msg = EmailMultiAlternatives(subject, '', from_email, to)
+            msg.attach_alternative(html_content, "text/html")
+            msg.send()
+
             return JsonResponse({'message': 'Ваше сообщение успешно отправлено.'}, status=200)
         else:
             return JsonResponse({'message': 'Произошла ошибка при отправке сообщения.'}, status=400)

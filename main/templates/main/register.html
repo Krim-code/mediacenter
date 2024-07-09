@@ -3,7 +3,7 @@
 {% block title %}Регистрация{% endblock %}
 
 {% block content %}
-<div class="max-w-md mx-auto bg-white p-6 rounded shadow">
+<div class="max-w-md mx-auto bg-white p-6 rounded shadow my-6">
     <h2 class="text-2xl mb-6">Регистрация</h2>
     <form action="{% url 'register' %}" method="post">
         {% csrf_token %}
